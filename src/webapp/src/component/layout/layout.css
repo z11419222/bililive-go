@@ -6,9 +6,16 @@
     padding: 24px;
 }
 
+.mobile-menu-btn {
+    display: none !important;
+}
+
 @media(max-device-width: 768px) {
+    .mobile-menu-btn {
+        display: inline-block !important;
+    }
     .small-header{
-        padding: 0 30px !important;
+        padding: 0 15px !important;
     }
     .side-bar {
         display: none;
