@@ -11,7 +11,9 @@ import {
     // @ts-ignore
     EditOutlined,
     // @ts-ignore
-    DeleteOutlined
+    DeleteOutlined,
+    // @ts-ignore
+    DownloadOutlined
 } from "@ant-design/icons";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Utils from "../../utils/common";
@@ -192,6 +194,32 @@ const FileList: React.FC = () => {
                 }
             })
             .catch(err => message.error("删除失败: " + err));
+    };
+
+    const handleDownload = (record: CurrentFolderFile, e: React.MouseEvent) => {
+        e.stopPropagation();
+        
+        let fullPath = record.name;
+        if (pathParam) {
+            fullPath = pathParam + "/" + record.name;
+        }
+
+        // 构建下载URL
+        const downloadUrl = `files/${encodePath(fullPath)}`;
+        
+        // 创建一个不可见的 <a> 标签并点击
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = downloadUrl;
+        a.download = record.name; // 指示浏览器下载，并使用文件名
+        
+        document.body.appendChild(a);
+        a.click();
+        
+        // 清理DOM
+        setTimeout(() => {
+            document.body.removeChild(a);
+        }, 100);
     };
 
     const handleBatchDelete = () => {
@@ -414,9 +442,21 @@ const FileList: React.FC = () => {
         }, {
             title: "操作",
             key: "action",
-            width: 200,
+            width: 250,
             render: (text: any, record: CurrentFolderFile) => (
                 <Space size="small" onClick={(e) => e.stopPropagation()}>
+                    {!record.is_folder && (
+                        <Button
+                            type="link"
+                            size="small"
+                            // @ts-ignore
+                            icon={<DownloadOutlined />}
+                            onClick={(e) => handleDownload(record, e)}
+                            className="action-btn"
+                        >
+                            下载
+                        </Button>
+                    )}
                     <Button
                         type="link"
                         size="small"
